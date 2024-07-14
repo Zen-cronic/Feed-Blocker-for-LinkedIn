@@ -1,28 +1,48 @@
 const maxPing = 5;
 const waitBetweenPings = 100; //in milliseconds
 
-chrome.storage.local.get(['hideFeed'], (res) => {
+const style = document.createElement("style");
+style.innerHTML = `
+  .scaffold-layout__main {
+    display: none !important;
+  }
+`;
+document.head.appendChild(style);
+
+chrome.storage.local.get(["hideFeed"], (res) => {
   if (res.hideFeed == undefined) {
-    chrome.storage.local.set({ 'hideFeed': true });
+    chrome.storage.local.set({ hideFeed: true });
     removeFeed();
   }
 });
 
-
 function removeFeed() {
   if (window.location.href.includes("linkedin.com/feed/")) {
-    if (document.getElementsByTagName("main")) {
-      if (document.getElementsByTagName("main")[0]) {
-        document.getElementsByTagName("main")[0].remove();
-      }
-    }
+    //B
+    // const style = document.createElement("style");
+    // style.innerHTML = `
+    //   .scaffold-layout__main {
+    //     display: none !important;
+    //   }
+    // `;
+    // document.head.appendChild(style);
+    //A
+    // const mainFeed = document.querySelector(".scaffold-layout__main");
+    // if (mainFeed) {
+    //   mainFeed.style.display = "none";
+    // }
+    //orig
+    // if (document.getElementsByTagName("main")) {
+    //   if (document.getElementsByTagName("main")[0]) {
+    //     document.getElementsByTagName("main")[0].remove();
+    //   }
+    // }
   }
 }
 
-
 /**
  * For some odd reason, the news seem to load much slower than the feed. Therefore, multiple attempts
- * on removing the news is necessary. 
+ * on removing the news is necessary.
  */
 
 async function attemptToRemoveElement(elementName) {
@@ -31,7 +51,7 @@ async function attemptToRemoveElement(elementName) {
     let removed = false;
 
     async function wait(ms) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           if (document.getElementById(elementName)) {
             document.getElementById(elementName).remove();
@@ -50,12 +70,8 @@ async function attemptToRemoveElement(elementName) {
 }
 
 setInterval(() => {
-  chrome.storage.local.get(['hideFeed', 'hideNews'], (res) => {
+  chrome.storage.local.get(["hideFeed", "hideNews"], (res) => {
     if (res.hideFeed) removeFeed();
     if (res.hideNews) attemptToRemoveElement("feed-news-module");
   });
 }, 500);
-
-
-
- 
