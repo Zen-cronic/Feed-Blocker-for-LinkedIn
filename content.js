@@ -50,11 +50,13 @@ async function attemptToRemoveElement(elementName) {
 }
 
 setInterval(() => {
+  console.warn("Every 1ms");
   chrome.storage.local.get(['hideFeed', 'hideNews'], (res) => {
     if (res.hideFeed) removeFeed();
     if (res.hideNews) attemptToRemoveElement("feed-news-module");
   });
-}, 500);
+  //Still does not immediately take effect
+}, 1);
 
 
 
